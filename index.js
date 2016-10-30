@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 var async = require('async');
-var request = require('request');
+var fetch = require('fetch');
 var registries = require('./registries.json');
-var npm = require('npm');
-var _ = require('lodash');
+var exec = require('child_process').exec;
 
 function exit(err) {
     console.error(err);
@@ -16,17 +15,23 @@ function getFastest(rs) {
 	if(!avalable || avalable.length < 1) {
 		return exit('no avalable registry.');
 	}
-	return _.orderBy(avalable, 'time')[0];
+	avalable.sort(function(a,b){
+		if (a.time > b.time) return 1;
+		if (a.time < b.time) return -1;
+		return 0;
+	});
+	return avalable[0];
 }
 
 function useRegistry(registry) {
 	if(!registry) return exit('no avalable registry.');
-	npm.load(function(err) {
-		if (err) return exit(err);
-		npm.commands.config(['set', 'registry', registry.registry], function(err, data) {
-			if (err) return exit(err);
-			var newR = npm.config.get('registry');
-			console.log('Registry has been set to: ' + newR)
+	var setCmd = 'npm config set registry ' + registry.registry;
+	exec(setCmd, function(error){
+		if(error) return exit('set registry error', error);
+		console.log('set registry to', registry.registry);
+		var getCmd = 'npm config get registry'
+			exec(getCmd, function(error, stdout){
+			console.log('current registry is ', stdout);
 		})
 	});
 }
@@ -36,12 +41,12 @@ async.map(
 	function(key, cbk) {
 		var registry = registries[key];
 		var start = +new Date();
-		request(registry.registry + 'pedding', {timeout: 1500},function(error, res) {
+		fetch.fetchUrl(registry.registry + 'pedding', { timeout: 3000 }, function(error, meta) {
 			cbk(null, {
 				name: key,
 				registry: registry.registry,
 				time: (+new Date() - start),
-				error: error || res.statusCode !== 200 ? true : false
+				error: error || meta.status !== 200 ? true : false
 			});
 		});
 	},
@@ -50,6 +55,6 @@ async.map(
 		try{
 			useRegistry(getFastest(rs));
 		} catch(e){
-			return exit('error', e);
+			return exit('error!', e)
 		};
 	});

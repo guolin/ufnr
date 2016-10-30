@@ -1,6 +1,6 @@
 {
   "name": "ufnr",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "use fastest npm registry",
   "main": "index.js",
   "bin": "./index.js",
@@ -23,8 +23,6 @@
   "homepage": "https://github.com/guolin/ufnr#readme",
   "dependencies": {
     "async": "^2.1.2",
-    "lodash": "^4.16.4",
-    "npm": "^3.10.9",
-    "request": "^2.76.0"
+    "fetch": "^1.1.0"
   }
 }
