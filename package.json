@@ -1,0 +1,30 @@
+{
+  "name": "ufnr",
+  "version": "0.0.1",
+  "description": "use fastest npm registry",
+  "main": "index.js",
+  "bin": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guolin/ufnr.git"
+  },
+  "keywords": [
+    "npm",
+    "registry"
+  ],
+  "author": "guolin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guolin/ufnr/issues"
+  },
+  "homepage": "https://github.com/guolin/ufnr#readme",
+  "dependencies": {
+    "async": "^2.1.2",
+    "lodash": "^4.16.4",
+    "npm": "^3.10.9",
+    "request": "^2.76.0"
+  }
+}
